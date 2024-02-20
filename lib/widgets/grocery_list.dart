@@ -24,6 +24,38 @@ class _GroceryListState extends State<GroceryList> {
 
   @override
   Widget build(BuildContext context) {
+    Widget groceryListBody = const Center(
+      child: Text(
+        'No Items added... Click the + icon to add some.',
+      ),
+    );
+    if (_groceryList.isNotEmpty) {
+      groceryListBody = ListView.builder(
+        itemCount: _groceryList.length,
+        itemBuilder: (ctx, index) => Dismissible(
+          key: ValueKey(
+            _groceryList[index],
+          ),
+          background: const Card(
+            color: Colors.red,
+          ),
+          onDismissed: (direction) {
+            setState(() {
+              _groceryList.removeAt(index);
+            });
+          },
+          child: ListTile(
+            title: Text(_groceryList[index].name),
+            leading: Container(
+              width: 20,
+              height: 20,
+              color: _groceryList[index].category.color,
+            ),
+            trailing: Text(_groceryList[index].quantity.toString()),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Grocery List'),
@@ -34,18 +66,7 @@ class _GroceryListState extends State<GroceryList> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _groceryList.length,
-        itemBuilder: (ctx, index) => ListTile(
-          title: Text(_groceryList[index].name),
-          leading: Container(
-            width: 20,
-            height: 20,
-            color: _groceryList[index].category.color,
-          ),
-          trailing: Text(_groceryList[index].quantity.toString()),
-        ),
-      ),
+      body: groceryListBody,
     );
   }
 }
